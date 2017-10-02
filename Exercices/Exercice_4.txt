@@ -1,0 +1,42 @@
+//  Write some awesome Swift code, or import libraries like "Foundation",
+//  "Dispatch", or "Glibc"
+
+import Foundation
+
+class ApiManager{
+    
+    var baseUrl : String = "https://api.randomuser.me/"
+    
+    func getRandomUser(completion: @escaping (Any) -> Void){
+        
+        var request = URLRequest(url: URL(string: baseUrl)!)
+        request.httpMethod = "GET"
+        
+        URLSession.shared.dataTask(with: request) {data, response, err in
+            do{
+                print(self.dataToJSON(data: data!) as Any)
+                
+            }catch let error as NSError{
+                print(error)
+            }
+            }.resume()
+    }
+    
+    func dataToJSON(data: Data) -> Any? {
+        do {
+            var json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String: Any]
+            
+            let result = json?["results"] as! NSArray
+            return result
+            
+        } catch let JSONError {
+            print(JSONError)
+        }
+        return nil
+    }
+    
+}
+
+/*callbackLogic(country: "fr", completion: { data in
+    print(data)
+})*/
